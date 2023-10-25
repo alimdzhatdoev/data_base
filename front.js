@@ -3,11 +3,14 @@ import {
     getData,
     delOne,
     editOne,
-    saveOneImg
+    saveOneImg,
+    generateId
 } from './library.js';
 
 import {
-    menu_tabs
+    menu_tabs,
+    showModal,
+    hideModal
 } from './menu_tabs.js';
 
 menu_tabs();
@@ -29,6 +32,9 @@ function showNews() {
                     </div>
                 `)
             }
+
+            showModal("newEdit");
+            hideModal();
         })
         .catch(error => {
             console.error('Ошибка:', error);
@@ -38,7 +44,6 @@ function showNews() {
 showNews()
 
 $("#saveNews").click(function () {
-    let id = $("#new_id").val();
     let title = $("#new_title").val();
     let text = $("#new_text").val();
 
@@ -53,7 +58,6 @@ $("#saveNews").click(function () {
         .then(
             (response) => {
                 const data = {
-                    id: id,
                     title: title,
                     img: response,
                     text: text
@@ -68,7 +72,6 @@ $("#saveNews").click(function () {
                         console.error('Ошибка:', error);
                     });
 
-                $("#new_id").val("");
                 $("#new_title").val("");
                 $("#new_img").val("");
                 $("#new_text").val("");
@@ -81,8 +84,7 @@ $("#saveNews").click(function () {
 
 $('.admin_info__item___content').on('click', '.newDelete', function () {
     let id = $(this).attr("idTodel");
-    console.log(id);
-    
+
     delOne("news", id)
         .then(response => {
             showNews()

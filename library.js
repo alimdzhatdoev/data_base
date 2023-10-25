@@ -1,11 +1,13 @@
 export async function addData(data, fileName) {
   const jsonData = JSON.stringify(data);
+  const id = generateId();
 
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "POST",
       url: "./dataBase/server/save-json.php",
       data: {
+        id: id,
         json: jsonData,
         docName: fileName
       },
@@ -118,4 +120,8 @@ export async function saveOneImg(imgID) {
       reject('Файл не выбран.');
     }
   });
+}
+
+export function generateId() {
+  return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }

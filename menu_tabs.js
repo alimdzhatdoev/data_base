@@ -34,3 +34,16 @@ export function menu_tabs() {
         })
     })
 }
+
+export function showModal(className) {
+    $(".admin_info__item___content").on("click", `.${className}`, function () {
+        $(".admin_info__changeElem").show();
+        $(".admin_info__changeElem").css("display", "flex");
+    })
+}
+
+export function hideModal() {
+    $(".admin_info__changeElem___editBlock____close").click(function () {
+        $(".admin_info__changeElem").hide();
+    })
+}
