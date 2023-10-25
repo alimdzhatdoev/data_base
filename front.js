@@ -78,6 +78,8 @@ $("#saveNews").click(function () {
                 $("#new_title").val("");
                 $("#new_img").val("");
                 $("#new_text").val("");
+
+                alert("Запись сохранена");
             },
         )
         .catch((error) => {
@@ -91,6 +93,7 @@ $('.admin_info__item___content').on('click', '.newDelete', function () {
     delOne("news", id)
         .then(response => {
             showNews();
+            alert("Запись удалена");
         })
         .catch(error => {
             console.error('Ошибка:', error);
