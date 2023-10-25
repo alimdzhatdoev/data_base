@@ -1,0 +1,10 @@
+:root {
+  --white: #ffffff;
+  --active-item: #2271B1;
+  --item-hover: #2C3338;
+  --item-main: #1D2327;
+  --item-elements: #cecece;
+  --item-delete: #ff0000;
+
+  --menu-width: 320px;
+}

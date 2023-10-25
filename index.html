@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+
+    <link rel="stylesheet" href="css/variables.css" />
+    <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+    <div class="admin">
+        <div class="admin_menu">
+            <div class="admin_menu__logo"><a href="http://new.moibiz09.ru" target="_blank">Мой бизнес</a></div>
+            <div class="admin_menu__items">
+                <ul>
+                    <li data_info="Главная" class="activeItem">Главная <div class="triangle"></div>
+                    </li>
+                    <li data_info="Новости">Новости <div class="triangle"></div>
+                    </li>
+                    <li data_info="Мероприятия">Мероприятия <div class="triangle"></div>
+                    </li>
+                    <li data_info="Меры поддержки">Меры поддержки <div class="triangle"></div>
+                    </li>
+                    <li data_info="Услуги">Услуги <div class="triangle"></div>
+                    </li>
+                    <li data_info="О нас">О нас <div class="triangle"></div>
+                    </li>
+                    <li data_info="Контакты">Контакты <div class="triangle"></div>
+                    </li>
+                    <li data_info="База знаний">База знаний <div class="triangle"></div>
+                    </li>
+                    <li data_info="Витрина предпринимателей">Витрина предпринимателей <div class="triangle"></div>
+                    </li>
+                </ul>
+                <ul>
+                    <li>Выход</li>
+                </ul>
+            </div>
+        </div>
+        <div class="admin_info">
+            <div class="admin_info__elem" data_info="Главная">1</div>
+            <div class="admin_info__elem" data_info="Новости">
+                <div class="admin_info__item">
+                    <div class="admin_info__item___title">Новости</div>
+                    <img src="" alt="" id="show_img_test">
+                    <div class="admin_info__item___form">
+                        <label>Добавить новость</label>
+                        <input type="text" id="new_id" placeholder="id"></input>
+                        <input type="text" id="new_title" placeholder="title"></input>
+                        <input type="text" id="new_text" placeholder="text"></input>
+                        <input type="file" id="new_img" accept="image/*" ></input>
+
+                        <button id="saveNews">Добавить новость</button>
+                    </div>
+
+                    <div class="admin_info__item___title">Существующие новости</div>
+
+                    <div class="admin_info__item___content">
+
+                    </div>
+                </div>
+            </div>
+            <div class="admin_info__elem" data_info="Мероприятия">3</div>
+            <div class="admin_info__elem" data_info="Меры поддержки">4</div>
+            <div class="admin_info__elem" data_info="Услуги">5</div>
+            <div class="admin_info__elem" data_info="О нас">6</div>
+            <div class="admin_info__elem" data_info="Контакты">7</div>
+            <div class="admin_info__elem" data_info="База знаний">8</div>
+            <div class="admin_info__elem" data_info="Витрина предпринимателей">9</div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script type="module" src="front.js"></script>
+</body>
+
+</html>
