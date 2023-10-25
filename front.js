@@ -104,3 +104,30 @@ $('.admin_info__item___content').on('click', '.newDelete', function () {
             console.error('Ошибка:', error);
         });
 })
+
+$('.admin_info__item___content').on('click', '.newEdit', function () {
+    let id = $(this).attr("idToEdit");
+    getData("news", id)
+        .then(response => {
+            $(".admin_info__changeElem___editBlock____data").empty();
+
+            $(".admin_info__changeElem___editBlock____data").append(
+                `
+                    <input type="text" class="admin_info__changeElem___editBlock____data__title" value="${response.title}" />
+                `
+            );
+            $(".admin_info__changeElem___editBlock____data").append(`
+                <div class="admin_info__changeElem___editBlock____data__img">
+                    <img src="img/${response.img}" alt="" />
+                </div>
+                <input type="file" class="admin_info__changeElem___editBlock____data__img" />
+            `);
+            $(".admin_info__changeElem___editBlock____data").append(
+                `<input class="admin_info__changeElem___editBlock____data__text"  value="${response.text}"/>`
+            );
+            $(".admin_info__changeElem___editBlock____data").append(
+                `<button class="admin_info__changeElem___editBlock____data__btn">Сохранить изменения</button>`
+            );
+
+        })
+})

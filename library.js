@@ -45,7 +45,8 @@ export async function editOne(data, fileName) {
 }
 
 export async function getData(fileName, id = "") {
-  const jsonFile = "./dataBase/storage/" + fileName + ".json";
+  let timestamp = new Date().getTime();
+  const jsonFile = "./dataBase/storage/" + fileName + ".json" + '?t=' + timestamp;
 
   return new Promise((resolve, reject) => {
     fetch(jsonFile)
