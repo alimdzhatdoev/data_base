@@ -94,6 +94,8 @@ export async function delOne(fileName, id) {
   });
 }
 
+// img
+
 export async function saveOneImg(imgID) {
   return new Promise((resolve, reject) => {
     var fileInput = $(`#${imgID}`)[0];
@@ -121,6 +123,29 @@ export async function saveOneImg(imgID) {
     }
   });
 }
+
+
+export async function delOneImg(fileName, id) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: "./dataBase/server/del-img.php",
+      data: {
+        id: id,
+        fileName: fileName
+      },
+      success: function (response) {
+        resolve(response); // Разрешение обещания с ответом
+      },
+      error: function (err) {
+        reject(err); // Отклонение обещания с ошибкой
+        console.error(err);
+      }
+    });
+  });
+}
+
+// end img
 
 export function generateId() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);

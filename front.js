@@ -4,7 +4,8 @@ import {
     delOne,
     editOne,
     saveOneImg,
-    generateId
+    generateId,
+    delOneImg
 } from './library.js';
 
 import {
@@ -87,7 +88,15 @@ $('.admin_info__item___content').on('click', '.newDelete', function () {
 
     delOne("news", id)
         .then(response => {
-            showNews()
+            showNews();
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+        });
+
+    delOneImg("news", id)
+        .then(response => {
+            console.log(response);
         })
         .catch(error => {
             console.error('Ошибка:', error);
