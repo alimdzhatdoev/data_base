@@ -66,7 +66,6 @@ $("#saveNews").click(function () {
 
                 addData(data, "news")
                     .then(response => {
-                        console.log('Успешно:', response);
                         showNews()
                     })
                     .catch(error => {
@@ -87,17 +86,11 @@ $('.admin_info__item___content').on('click', '.newDelete', function () {
     let id = $(this).attr("idTodel");
 
     delOne("news", id)
-        .then(response => {
-            showNews();
-        })
         .catch(error => {
             console.error('Ошибка:', error);
         });
 
     delOneImg("news", id)
-        .then(response => {
-            console.log(response);
-        })
         .catch(error => {
             console.error('Ошибка:', error);
         });
