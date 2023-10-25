@@ -23,7 +23,10 @@ function showNews() {
             for (let i = response.length - 1; i >= 0; i--) {
                 $(".admin_info__item___content").append(`
                     <div class="admin_info__item___content____element">
-                        <div class="admin_info__item___content____element_____title">${response[i].title}</div>
+                        <div class="admin_info__item___content____element_____title">
+                            <img src="img/${response[i].img}" alt="" />
+                            ${response[i].title}
+                        </div>
                         <div class="admin_info__item___content____element_____btnHover">
                             <div class="admin_info__item___content____element_____btnHover______title newEdit" idToEdit="${response[i].id}">Изменить
                             </div>
@@ -86,6 +89,9 @@ $('.admin_info__item___content').on('click', '.newDelete', function () {
     let id = $(this).attr("idTodel");
 
     delOne("news", id)
+        .then(response => {
+            showNews();
+        })
         .catch(error => {
             console.error('Ошибка:', error);
         });

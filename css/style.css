@@ -181,7 +181,15 @@ input[type="file"] {
 }
 
 .admin_info__item___content____element_____title {
+    height: 50%;
     font-size: 16px;
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.admin_info__item___content____element_____title img{
+    height: 100%;
 }
 
 .admin_info__item___content____element_____btnHover {
