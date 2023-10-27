@@ -188,7 +188,7 @@ input[type="file"] {
     align-items: flex-start;
 }
 
-.admin_info__item___content____element_____title img{
+.admin_info__item___content____element_____title img {
     height: 100%;
 }
 
@@ -215,79 +215,97 @@ input[type="file"] {
     color: var(--item-delete);
 }
 
-.admin_info__elem{
+.admin_info__elem {
     display: none;
 }
 
-.admin_info__changeElem{
-    position: absolute;
-    top: 0;
-    left: 0;
+.admin_info__changeElem {
     width: 100%;
-    height: 100vh;
-    display: none;
-    justify-content: center;
+    height: 100%;
+    display: flex;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.5);
 }
 
-.admin_info__changeElem___editBlock{
-    background-color: var(--white);
-    border-radius: 10px;
-    position: relative;
-}
-
-.admin_info__changeElem___editBlock____close{
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    font-size: 24px;
-    font-weight: 700;
-}
-
-.admin_info__changeElem___editBlock____close img{
-    width: 35px;
-    cursor: pointer;
-}
-
-.admin_info__changeElem___editBlock____data{
-    width: 900px;
-    height: 600px;
-    padding: 20px;
+.admin_info__changeElem___data {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;
-    overflow: hidden;
-    overflow-y: scroll;
+    position: relative;
 }
 
-.admin_info__changeElem___editBlock____data::-webkit-scrollbar{
+.admin_info__changeElem___data::-webkit-scrollbar {
     display: none;
 }
 
-.admin_info__changeElem___editBlock____data__title{
-    width: 90%;
+.admin_info__changeElem___data____title {
+    width: 100%;
     height: 40px;
-    font-size: 22px;
-    font-weight: 500;
+    padding: 0 10px;
 }
 
-.admin_info__changeElem___editBlock____data__text{
-    width: 90%;
-    height: 40px;
-}
-
-.admin_info__changeElem___editBlock____data__img{
+.admin_info__changeElem___data____text {
     width: 100%;
     height: 300px;
+    padding: 10px;
 }
 
-.admin_info__changeElem___editBlock____data__img img{
+.admin_info__changeElem___data____img {
+    width: 100%;
+    height: 100px;
+}
+
+.admin_info__changeElem___data____img img {
     height: 100%;
 }
 
-.admin_info__changeElem___editBlock____data__btn{
-    width: 300px;
+.admin_info__changeElem___data____btn {
+    width: 200px;
     height: 40px;
     cursor: pointer;
+    background-color: var(--white);
+    border: 1px solid var(--item-hover);
+    border-radius: 5px;
+    transition: all .3s ease-in-out;
+    font-size: 14px;
+}
+
+.admin_info__changeElem___data____btn:hover{
+    background-color: var(--active-item);
+    border: 1px solid var(--active-item);
+    color: var(--white);
+}
+
+.comeBack {
+    width: 200px;
+    padding: 12px 15px;
+    color: var(--white);
+    background-color: var(--item-hover);
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+    gap: 10px;
+    font-size: 14px;
+}
+
+.comeBack img {
+    width: 10px;
+}
+
+.comeBack:hover {
+    background-color: var(--active-item);
+}
+
+.admin_info__changeElem___data____btn {
+    position: fixed;
+    top: 20px;
+    right: 35px;
+}
+
+.admin_info__changeElem___data____header {
+    font-size: 20px;
+    font-weight: 500;
 }

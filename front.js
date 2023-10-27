@@ -51,14 +51,7 @@ $("#saveNews").click(function () {
     let title = $("#new_title").val();
     let text = $("#new_text").val();
 
-    $('#new_img').change(function () {
-        var fileInput = $(this)[0];
-        var file = fileInput.files[0];
-        var fileName = file.name;
-        console.log('Имя файла: ' + fileName);
-    });
-
-    saveOneImg('new_img')
+    saveOneImg('#new_img')
         .then(
             (response) => {
                 const data = {
@@ -109,25 +102,84 @@ $('.admin_info__item___content').on('click', '.newEdit', function () {
     let id = $(this).attr("idToEdit");
     getData("news", id)
         .then(response => {
-            $(".admin_info__changeElem___editBlock____data").empty();
+            $(".admin_info__elem").hide();
 
-            $(".admin_info__changeElem___editBlock____data").append(
+            $(".admin_info__elem[data_info='edit_element']").show();
+
+            $(".admin_info__changeElem___data").empty();
+
+            $(".admin_info__changeElem___data").append(
+                `<div class="comeBack"><img src="img/icons/left-arrow.png" />Вернуться назад</div>`
+            );
+
+            $(".admin_info__changeElem___data").append(
                 `
-                    <input type="text" class="admin_info__changeElem___editBlock____data__title" value="${response.title}" />
+                    <div class="admin_info__changeElem___data____header">Название новости</div>
+                    <input type="text" class="admin_info__changeElem___data____title" value="${response.title}" />
                 `
             );
-            $(".admin_info__changeElem___editBlock____data").append(`
-                <div class="admin_info__changeElem___editBlock____data__img">
+
+            $(".admin_info__changeElem___data").append(`
+                <div class="admin_info__changeElem___data____header">Картинка новости</div>
+                <div class="admin_info__changeElem___data____img">
                     <img src="img/${response.img}" alt="" />
                 </div>
-                <input type="file" class="admin_info__changeElem___editBlock____data__img" />
+                <input type="file" class="admin_info__changeElem___data____file" />
             `);
-            $(".admin_info__changeElem___editBlock____data").append(
-                `<input class="admin_info__changeElem___editBlock____data__text"  value="${response.text}"/>`
-            );
-            $(".admin_info__changeElem___editBlock____data").append(
-                `<button class="admin_info__changeElem___editBlock____data__btn">Сохранить изменения</button>`
+
+            $(".admin_info__changeElem___data").append(
+                `
+                <div class="admin_info__changeElem___data____header">Текст новости</div>
+                <textarea class="admin_info__changeElem___data____text" >${response.text} </textarea>
+                `
             );
 
+            $(".admin_info__changeElem___data").append(
+                `<button class="admin_info__changeElem___data____btn" new_change_id="${id}">Сохранить изменения</button>`
+            );
         })
+})
+
+$(".admin_info__elem").on("click", ".comeBack", function () {
+    let tabData = localStorage.getItem('tab_name');
+
+    let blocks = $(".admin_info__elem");
+    blocks.each(function () {
+        if ($(this).attr("data_info") == tabData) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    })
+})
+
+$(".admin_info__elem").on("click", ".admin_info__changeElem___data____btn", function(){
+    // let title = $(".admin_info__changeElem___data____title").val();
+    // let text = $(".admin_info__changeElem___data____text").val();
+    // let id = $(this).attr("new_change_id");
+
+    // saveOneImg('.admin_info__changeElem___data____file')
+    //     .then(
+    //         (response) => {
+    //             const data = {
+    //                 id: id,
+    //                 title: title,
+    //                 img: response,
+    //                 text: text
+    //             };
+
+    //             editOne(data, "news")
+    //                 .then(response => {
+    //                     console.log(response);
+    //                 })
+    //                 .catch(error => {
+    //                     console.error('Ошибка:', error);
+    //                 });
+
+    //             alert("Запись сохранена");
+    //         },
+    //     )
+    //     .catch((error) => {
+    //         console.error('Ошибка:', error);
+    //     });
 })

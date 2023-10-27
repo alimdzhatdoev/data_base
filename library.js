@@ -99,7 +99,7 @@ export async function delOne(fileName, id) {
 
 export async function saveOneImg(imgID) {
   return new Promise((resolve, reject) => {
-    var fileInput = $(`#${imgID}`)[0];
+    var fileInput = $(`${imgID}`)[0];
     var file = fileInput.files[0];
 
     if (file) {
@@ -124,7 +124,6 @@ export async function saveOneImg(imgID) {
     }
   });
 }
-
 
 export async function delOneImg(fileName, id) {
   return new Promise((resolve, reject) => {
