@@ -11,7 +11,8 @@ import {
 import {
     menu_tabs,
     showModal,
-    hideModal
+    hideModal,
+    comeBack
 } from './menu_tabs.js';
 
 menu_tabs();
@@ -115,7 +116,7 @@ $('.admin_info__item___content').on('click', '.newEdit', function () {
             $(".admin_info__changeElem___data").append(
                 `
                     <div class="admin_info__changeElem___data____header">Название новости</div>
-                    <input type="text" class="admin_info__changeElem___data____title" value="${response.title}" />
+                    <input type="text" class="admin_info__changeElem___data____title changeBlock_news" value="${response.title}" />
                 `
             );
 
@@ -124,13 +125,13 @@ $('.admin_info__item___content').on('click', '.newEdit', function () {
                 <div class="admin_info__changeElem___data____img">
                     <img src="img/${response.img}" alt="" />
                 </div>
-                <input type="file" class="admin_info__changeElem___data____file" />
+                <input type="file" class="admin_info__changeElem___data____file changeBlock_news" />
             `);
 
             $(".admin_info__changeElem___data").append(
                 `
                 <div class="admin_info__changeElem___data____header">Текст новости</div>
-                <textarea class="admin_info__changeElem___data____text" >${response.text} </textarea>
+                <textarea class="admin_info__changeElem___data____text changeBlock_news" >${response.text} </textarea>
                 `
             );
 
@@ -141,45 +142,57 @@ $('.admin_info__item___content').on('click', '.newEdit', function () {
 })
 
 $(".admin_info__elem").on("click", ".comeBack", function () {
-    let tabData = localStorage.getItem('tab_name');
-
-    let blocks = $(".admin_info__elem");
-    blocks.each(function () {
-        if ($(this).attr("data_info") == tabData) {
-            $(this).show();
-        } else {
-            $(this).hide();
-        }
-    })
+    comeBack();
 })
 
-$(".admin_info__elem").on("click", ".admin_info__changeElem___data____btn", function(){
-    // let title = $(".admin_info__changeElem___data____title").val();
-    // let text = $(".admin_info__changeElem___data____text").val();
-    // let id = $(this).attr("new_change_id");
+$(".admin_info__elem").on("click", ".admin_info__changeElem___data____btn", function () {
 
-    // saveOneImg('.admin_info__changeElem___data____file')
-    //     .then(
-    //         (response) => {
-    //             const data = {
-    //                 id: id,
-    //                 title: title,
-    //                 img: response,
-    //                 text: text
-    //             };
+    let newValues = {};
 
-    //             editOne(data, "news")
-    //                 .then(response => {
-    //                     console.log(response);
-    //                 })
-    //                 .catch(error => {
-    //                     console.error('Ошибка:', error);
-    //                 });
+    let fileInput = $('.admin_info__changeElem___data____file')[0];
 
-    //             alert("Запись сохранена");
-    //         },
-    //     )
-    //     .catch((error) => {
-    //         console.error('Ошибка:', error);
-    //     });
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+        saveOneImg('.admin_info__changeElem___data____file')
+            .then((response) => {
+                newValues.img = response;
+                newValues.title = $(".admin_info__changeElem___data____title").val();
+                newValues.text = $(".admin_info__changeElem___data____text").val();
+                newValues.id = $(this).attr("new_change_id");
+
+                delOneImg("news", newValues.id)
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                    });
+
+                editOne(newValues, "news")
+                    .then(response => {
+                        comeBack();
+                        showNews();
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                    });
+
+
+            })
+            .catch((error) => {
+                console.error('Ошибка:', error);
+            });
+    } else {
+        newValues.title = $(".admin_info__changeElem___data____title").val();
+        newValues.text = $(".admin_info__changeElem___data____text").val();
+        newValues.id = $(this).attr("new_change_id");
+
+        editOne(newValues, "news")
+            .then(response => {
+                comeBack();
+                showNews();
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+
+        comeBack();
+        showNews();
+    }
 })

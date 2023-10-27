@@ -47,3 +47,16 @@ export function hideModal() {
         $(".admin_info__changeElem").hide();
     })
 }
+
+export function comeBack() {
+    let tabData = localStorage.getItem('tab_name');
+
+    let blocks = $(".admin_info__elem");
+    blocks.each(function () {
+        if ($(this).attr("data_info") == tabData) {
+            $(this).show();
+        } else {
+            $(this).hide();
+        }
+    })
+}
