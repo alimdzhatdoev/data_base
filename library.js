@@ -181,7 +181,6 @@ export function getTextEditor(fileName) {
   )
 }
 
-
 export function showData(fileName) {
   getData(fileName)
       .then(response => {
@@ -207,7 +206,6 @@ export function showData(fileName) {
           console.error('Ошибка:', error);
       });
 }
-
 
 export function makeData(idBlock) {
   showData(idBlock)

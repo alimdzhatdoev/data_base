@@ -22,7 +22,6 @@ import {
     schema
 } from './config_db.js';
 
-
 createMenuTabs(schema());
 
 createMenuNames(schema(), getTextEditor());
