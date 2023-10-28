@@ -5,7 +5,8 @@ import {
     editOne,
     saveOneImg,
     generateId,
-    delOneImg
+    delOneImg,
+    getTextEditor
 } from './library.js';
 
 import {
@@ -47,10 +48,18 @@ function showNews() {
 }
 
 showNews()
+getTextEditor("#new_text");
 
 $("#saveNews").click(function () {
     let title = $("#new_title").val();
-    let text = $("#new_text").val();
+
+    let content = tinymce.get('new_text').getContent();
+    let data = {
+        content: content
+    };
+
+    let jsonContent = JSON.stringify(data);
+
 
     saveOneImg('#new_img')
         .then(
@@ -58,7 +67,7 @@ $("#saveNews").click(function () {
                 const data = {
                     title: title,
                     img: response,
-                    text: text
+                    text: jsonContent
                 };
 
                 addData(data, "news")
@@ -71,7 +80,7 @@ $("#saveNews").click(function () {
 
                 $("#new_title").val("");
                 $("#new_img").val("");
-                $("#new_text").val("");
+                tinymce.get('new_text').setContent('');
 
                 alert("Запись сохранена");
             },
@@ -101,6 +110,7 @@ $('.admin_info__item___content').on('click', '.newDelete', function () {
 
 $('.admin_info__item___content').on('click', '.newEdit', function () {
     let id = $(this).attr("idToEdit");
+
     getData("news", id)
         .then(response => {
             $(".admin_info__elem").hide();
@@ -131,13 +141,20 @@ $('.admin_info__item___content').on('click', '.newEdit', function () {
             $(".admin_info__changeElem___data").append(
                 `
                 <div class="admin_info__changeElem___data____header">Текст новости</div>
-                <textarea class="admin_info__changeElem___data____text changeBlock_news" >${response.text} </textarea>
+                <textarea class="admin_info__changeElem___data____text changeBlock_news" id="newTextEdit" ></textarea>
                 `
             );
 
             $(".admin_info__changeElem___data").append(
                 `<button class="admin_info__changeElem___data____btn" new_change_id="${id}">Сохранить изменения</button>`
             );
+
+
+            getTextEditor("#newTextEdit").then(function () {
+                var data = JSON.parse(response.text);
+                console.log(data);
+                tinymce.get('newTextEdit').setContent(data.content);
+            });
         })
 })
 
@@ -156,7 +173,15 @@ $(".admin_info__elem").on("click", ".admin_info__changeElem___data____btn", func
             .then((response) => {
                 newValues.img = response;
                 newValues.title = $(".admin_info__changeElem___data____title").val();
-                newValues.text = $(".admin_info__changeElem___data____text").val();
+
+                let content = tinymce.get('newTextEdit').getContent();
+                let data = {
+                    content: content
+                };
+            
+                let jsonContent = JSON.stringify(data);
+
+                newValues.text = jsonContent;
                 newValues.id = $(this).attr("new_change_id");
 
                 delOneImg("news", newValues.id)
@@ -180,7 +205,16 @@ $(".admin_info__elem").on("click", ".admin_info__changeElem___data____btn", func
             });
     } else {
         newValues.title = $(".admin_info__changeElem___data____title").val();
-        newValues.text = $(".admin_info__changeElem___data____text").val();
+        
+        let content = tinymce.get('newTextEdit').getContent();
+        let data = {
+            content: content
+        };
+    
+        let jsonContent = JSON.stringify(data);
+
+        newValues.text = jsonContent;
+        
         newValues.id = $(this).attr("new_change_id");
 
         editOne(newValues, "news")
