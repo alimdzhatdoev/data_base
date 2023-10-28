@@ -1,6 +1,7 @@
 <?php
 if (isset($_POST['json'])) {
 
+    $schemaData = $_POST['schemaData'];
     $jsonData = $_POST['json'];
     $docName = $_POST['docName'];
 
@@ -10,6 +11,7 @@ if (isset($_POST['json'])) {
 
     $currentData = file_get_contents($filePath);
     $object = json_decode($jsonData);
+    $schema = json_decode($schemaData);
 
     if ($currentData != "") {
         $totalMass = json_decode($currentData);
@@ -17,17 +19,14 @@ if (isset($_POST['json'])) {
         for ($i = 0; $i < count($totalMass); $i++) {
 
             if ($totalMass[$i]->id == $object->id) {
-                if ($object->title) {
-                    $totalMass[$i]->title = $object->title;
-                }
-                if ($object->img) {
-                    $totalMass[$i]->img = $object->img;
-                }
-                if ($object->text) {
-                    $totalMass[$i]->text = $object->text;
+                foreach ($schema as $key => $value) {
+                    if ($totalMass[$i]->$key != $object->$key && $object->$key!= null) {
+                        $totalMass[$i]->$key = $object->$key;
+                    }
                 }
             }
         }
+
         $jsonResult = json_encode($totalMass, JSON_PRETTY_PRINT);
         file_put_contents($filePath, $jsonResult);
         echo "Данные успешно изменены на сервере.";

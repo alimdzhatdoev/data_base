@@ -127,7 +127,10 @@ input[type="file"] {
 
 .admin_info__item___form label {
     font-size: 16px;
-    margin-bottom: 20px;
+    margin-top: 10px;
+}
+.admin_info__item___form label:first-child {
+    margin-top: 0px;
 }
 
 .admin_info__item___form input {
@@ -157,6 +160,7 @@ input[type="file"] {
     cursor: pointer;
     background-color: var(--item-elements);
     color: var(--item-main);
+    margin-top: 10px;
 }
 
 .admin_info__item___form button:hover {
@@ -312,4 +316,8 @@ input[type="file"] {
 .admin_info__changeElem___data____header {
     font-size: 20px;
     font-weight: 500;
+}
+
+.tox-statusbar__branding{
+    display: none !important;
 }

@@ -19,6 +19,7 @@ if (isset($_POST['json'])) {
         file_put_contents($filePath, $jsonResult);
     } else {
         $object = json_decode($jsonData); 
+        $object->id = $id;
         array_push($totalMass, $object);
         $jsonResult = json_encode($totalMass, JSON_PRETTY_PRINT);
         file_put_contents($filePath, $jsonResult);

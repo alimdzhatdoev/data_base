@@ -22,14 +22,16 @@ export async function addData(data, fileName) {
   });
 }
 
-export async function editOne(data, fileName) {
+export async function editOne(data, fileName, schema) {
   return new Promise((resolve, reject) => {
     const jsonData = JSON.stringify(data);
+    const schemaData = JSON.stringify(schema[fileName]);
 
     $.ajax({
       type: "POST",
       url: "./dataBase/server/edit-json.php",
       data: {
+        schemaData: schemaData,
         json: jsonData,
         docName: fileName
       },
@@ -166,4 +168,31 @@ export function getTextEditor(fileName) {
       menubar: 'favs file edit view insert format tools table help',
     })
   )
+}
+
+
+export function showData(fileName) {
+  getData(fileName)
+      .then(response => {
+          $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).text("");
+          for (let i = response.length - 1; i >= 0; i--) {
+              $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).append(`
+              <div class="admin_info__item___content____element">
+                  <div class="admin_info__item___content____element_____title">
+                      <img src="img/${response[i].img}" alt="" />
+                      ${response[i].title}
+                  </div>
+                  <div class="admin_info__item___content____element_____btnHover">
+                      <div class="admin_info__item___content____element_____btnHover______title ${fileName}Edit" idToEdit="${response[i].id}">Изменить
+                      </div>
+                      <div class="admin_info__item___content____element_____btnHover______title ${fileName}Delete delete" idTodel="${response[i].id}">
+                          Удалить</div>
+                  </div>
+              </div>
+          `)
+          }
+      })
+      .catch(error => {
+          console.error('Ошибка:', error);
+      });
 }
