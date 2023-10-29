@@ -20,6 +20,8 @@ import {
     schema
 } from './config_db.js';
 
+createFilesFromConfig(schema)
+
 createMenuTabs(schema());
 
 createMenuNames(schema(), getTextEditor());
@@ -31,5 +33,3 @@ const data = schema();
 for (const category in data) {
     makeData(category);
 }
-
-createFilesFromConfig(schema)
