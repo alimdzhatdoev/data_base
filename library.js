@@ -50,6 +50,30 @@ export async function editOne(data, fileName, schema) {
   });
 }
 
+export async function editOneDeleteImg(data, fileName, schema) {
+  return new Promise((resolve, reject) => {
+    const jsonData = JSON.stringify(data);
+    const schemaData = JSON.stringify(schema[fileName]);
+
+    $.ajax({
+      type: "POST",
+      url: "./dataBase/server/edit-one-delete-img-json.php",
+      data: {
+        schemaData: schemaData,
+        json: jsonData,
+        docName: fileName
+      },
+      success: function (response) {
+        resolve(response); // Разрешение обещания с ответом
+      },
+      error: function (err) {
+        reject(err); // Отклонение обещания с ошибкой
+        console.error(err);
+      }
+    });
+  });
+}
+
 export async function getData(fileName, id = "") {
   let timestamp = new Date().getTime();
   const jsonFile = "./dataBase/storage/" + fileName + ".json" + '?t=' + timestamp;
@@ -354,14 +378,48 @@ export function makeData(idBlock) {
           let str = "";
           for (let i = 0; i < response.img.length; i++) {
             str += `
-              <div class="admin_info__changeElem___data____img">
+              <div class="admin_info__changeElem___data____img" data_del_block=${response.img[i]}>
                 <img src="img/${response.img[i]}" data_change="${response.img[i]}" alt="" />
+                <div class="admin_info__changeElem___data____img__delete" data_del_block=${response.img[i]} data_idBlock_toDel=${response.id}>Удалить</div>
               </div>
-              <input type="${type}" class="admin_info__changeElem___data____file changeBlock_${name}__${i}" oldName=${response.img[i]} />
+              <input type="${type}" class="admin_info__changeElem___data____file changeBlock_${name}__${i}" data_del_block=${response.img[i]} oldName=${response.img[i]} />
             `;
           }
           return str;
         }
+
+        $(`.admin_info__changeElem`).on("click", `.admin_info__changeElem___data____img__delete`, function () {
+          let thisData = $(this).attr("data_del_block");
+          let thisID = $(this).attr("data_idBlock_toDel");
+
+          let removeBlock = $(`.admin_info__changeElem___data____img`);
+          let remInput = $(`.admin_info__changeElem___data____file`)
+
+          for (let i = 0; i < removeBlock.length; i++) {
+
+            let removeBlockAttr = removeBlock[i].attributes["data_del_block"].value;
+            let remInputAttr = remInput[i].attributes["data_del_block"].value;
+
+            if (thisData == removeBlockAttr) {
+              $(`.admin_info__changeElem___data____img[data_del_block="${removeBlockAttr}"]`).remove();
+              $(`.admin_info__changeElem___data____file[data_del_block="${remInputAttr}"]`).remove();
+
+              let delImg = {
+                img: [thisData],
+                id: thisID
+              }
+
+              delOneImg(idBlock, thisData);
+              editOneDeleteImg(delImg, idBlock, schema())
+                .then(response => {
+                  console.log(response);
+                });
+            }
+
+          }
+
+
+        });
 
         for (const category in data) {
           if (category == idBlock) {
@@ -410,7 +468,7 @@ export function makeData(idBlock) {
   })
 
   $(".admin_info__elem").on("click", `.${idBlock}_change_btn`, function () {
-    
+
     let filesToSave = [];
     let filesToDel = [];
 
@@ -437,14 +495,14 @@ export function makeData(idBlock) {
     function removeDuplicateFiles(files) {
       const uniqueFiles = [];
       const seenFileNames = new Set();
-    
+
       for (const file of files) {
         if (!seenFileNames.has(file.name)) {
           uniqueFiles.push(file);
           seenFileNames.add(file.name);
         }
       }
-    
+
       return uniqueFiles;
     }
 
@@ -455,7 +513,7 @@ export function makeData(idBlock) {
         .then((response) => {
           //response - массив с новыми названиями картинок
           //filesToDel - массив с названиями картинок которые надо удалить
-          
+
           const data = schema();
           let newObject = {};
 
@@ -486,7 +544,7 @@ export function makeData(idBlock) {
           newObject.id = $(this).attr(`${idBlock}_change_id`);
           // console.log(newObject);
 
-          for(let i = 0; i < filesToDel.length; i++) {
+          for (let i = 0; i < filesToDel.length; i++) {
             delOneImg(`${idBlock}`, filesToDel[i])
               .catch(error => {
                 console.error('Ошибка:', error);

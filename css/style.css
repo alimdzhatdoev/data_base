@@ -357,3 +357,20 @@ input[type="file"] {
 .admin_info__item___tabBlocks____block{
     margin-top: 20px;
 }
+
+.admin_info__changeElem___data____img__delete{
+    height: 35px;
+    background-color: brown;
+    color: var(--white);
+    padding: 0 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all .2s ease-in-out;
+}
+
+.admin_info__changeElem___data____img__delete:hover{
+    opacity: 1;
+}
