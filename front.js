@@ -8,15 +8,12 @@ import {
     delOneImg,
     getTextEditor,
     showData,
-    makeData
-} from './library.js';
-
-import {
+    makeData,
     menu_tabs,
     comeBack,
     createMenuNames,
     createMenuTabs
-} from './menu_tabs.js';
+} from './library.js';
 
 import {
     schema
