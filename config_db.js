@@ -47,6 +47,33 @@ export function schema() {
                 "type": "file",
                 "required": true
             },
+        },
+        "events1": {
+            "menuName": "Мероприятия1",
+            "title": {
+                "name": "Название мероприятия",
+                "element": "input",
+                "type": "text",
+                "required": true
+            },
+            "desc": {
+                "name": "Описание мероприятия",
+                "element": "input",
+                "type": "text",
+                "required": true
+            },
+            "text": {
+                "name": "Текст мероприятия",
+                "element": "textarea",
+                "type": "text",
+                "required": true
+            },
+            "img": {
+                "name": "Картинки мероприятия",
+                "element": "input",
+                "type": "file",
+                "required": true
+            },
         }
     })
 }

@@ -12,7 +12,8 @@ import {
     menu_tabs,
     comeBack,
     createMenuNames,
-    createMenuTabs
+    createMenuTabs,
+    createFilesFromConfig
 } from './library.js';
 
 import {
@@ -30,3 +31,9 @@ const data = schema();
 for (const category in data) {
     makeData(category);
 }
+
+createFilesFromConfig(schema)
+    .then((response) => {
+        console.log(response);
+    })
+    .catch((error) => {});

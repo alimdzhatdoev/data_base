@@ -752,3 +752,24 @@ export function createMenuTabs(schema) {
     }
   })
 }
+
+export async function createFilesFromConfig(schema) {
+  return new Promise((resolve, reject) => {
+    const schemaData = JSON.stringify(schema());
+
+    $.ajax({
+      type: "POST",
+      url: "./dataBase/server/createFilesFromConfig.php",
+      data: {
+        schemaData: schemaData,
+      },
+      success: function (response) {
+        resolve(response); // Разрешение обещания с ответом
+      },
+      error: function (err) {
+        reject(err); // Отклонение обещания с ошибкой
+        console.error(err);
+      }
+    });
+  });
+}
