@@ -321,3 +321,37 @@ input[type="file"] {
 .tox-statusbar__branding{
     display: none !important;
 }
+
+.admin_info__item___tabNames{
+    display: flex;
+    gap: 10px;
+}
+
+.admin_info__item___tabNames____name{
+    border: 1px solid var(--active-item);
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+
+.admin_info__item___tabNames____name:hover{
+    background-color: var(--active-item);
+    color: var(--white);
+}
+
+.activeTabName{
+    background-color: var(--active-item);
+    color: var(--white);
+}
+
+.admin_info__item___tabBlocks____block{
+    display: none;
+}
+
+.activeBlockShow{
+    display: block;
+}
+
+.admin_info__item___tabBlocks____block{
+    margin-top: 20px;
+}

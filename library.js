@@ -176,10 +176,10 @@ export function getTextEditor(fileName) {
 
 export function showData(fileName) {
   getData(fileName)
-      .then(response => {
-          $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).text("");
-          for (let i = response.length - 1; i >= 0; i--) {
-              $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).append(`
+    .then(response => {
+      $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).text("");
+      for (let i = response.length - 1; i >= 0; i--) {
+        $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).append(`
               <div class="admin_info__item___content____element">
                   <div class="admin_info__item___content____element_____title">
                       <img src="img/${response[i].img}" alt="" />
@@ -193,249 +193,249 @@ export function showData(fileName) {
                   </div>
               </div>
           `)
-          }
-      })
-      .catch(error => {
-          console.error('Ошибка:', error);
-      });
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка:', error);
+    });
 }
 
 export function makeData(idBlock) {
   showData(idBlock)
 
   $(`#save${idBlock}`).click(function () {
-      const data = schema();
-      let newObject = {};
+    const data = schema();
+    let newObject = {};
 
-      for (const category in data) {
-          if (category == idBlock) {
-              for (const subItem in data[category]) {
-                  if (subItem != "menuName") {
-                      if (data[category][subItem].element == "input") {
-                          newObject[subItem] = $(`#${category}_${subItem}`).val();
-                      }
-                      if (data[category][subItem].element == "textarea") {
-                          let content = tinymce.get(`${category}_${subItem}`).getContent();
-                          let data = {
-                              content: content
-                          };
+    for (const category in data) {
+      if (category == idBlock) {
+        for (const subItem in data[category]) {
+          if (subItem != "menuName") {
+            if (data[category][subItem].element == "input") {
+              newObject[subItem] = $(`#${category}_${subItem}`).val();
+            }
+            if (data[category][subItem].element == "textarea") {
+              let content = tinymce.get(`${category}_${subItem}`).getContent();
+              let data = {
+                content: content
+              };
 
-                          let jsonContent = JSON.stringify(data);
-                          newObject[subItem] = jsonContent;
-                      }
-                  }
-              }
+              let jsonContent = JSON.stringify(data);
+              newObject[subItem] = jsonContent;
+            }
           }
+        }
       }
+    }
 
-      saveOneImg(`#${idBlock}_img`)
-          .then(
-              (response) => {
-                  newObject["img"] = response;
+    saveOneImg(`#${idBlock}_img`)
+      .then(
+        (response) => {
+          newObject["img"] = response;
 
-                  addData(newObject, `${idBlock}`)
-                      .then(response => {
-                          showData(idBlock)
-                      })
-                      .catch(error => {
-                          console.error('Ошибка:', error);
-                      });
-
-                  const data = schema();
-
-                  for (const category in data) {
-                      if (category == idBlock) {
-                          for (const subItem in data[category]) {
-                              if (subItem != "menuName") {
-                                  if (data[category][subItem].element == "input") {
-                                      $(`#${category}_${subItem}`).val("");
-                                  }
-                                  if (data[category][subItem].element == "textarea") {
-                                      tinymce.get(`${category}_${subItem}`).setContent("");
-                                  }
-                              }
-                          }
-                      }
-                  }
-
-                  alert("Запись сохранена");
-              },
-          )
-          .catch((error) => {
+          addData(newObject, `${idBlock}`)
+            .then(response => {
+              showData(idBlock)
+            })
+            .catch(error => {
               console.error('Ошибка:', error);
-          });
+            });
+
+          const data = schema();
+
+          for (const category in data) {
+            if (category == idBlock) {
+              for (const subItem in data[category]) {
+                if (subItem != "menuName") {
+                  if (data[category][subItem].element == "input") {
+                    $(`#${category}_${subItem}`).val("");
+                  }
+                  if (data[category][subItem].element == "textarea") {
+                    tinymce.get(`${category}_${subItem}`).setContent("");
+                  }
+                }
+              }
+            }
+          }
+
+          alert("Запись сохранена");
+        },
+      )
+      .catch((error) => {
+        console.error('Ошибка:', error);
+      });
   });
 
   $('.admin_info__item___content').on('click', `.${idBlock}Delete`, function () {
-      let id = $(this).attr("idTodel");
+    let id = $(this).attr("idTodel");
 
-      delOne(idBlock, id)
-          .then(response => {
-              showData(idBlock)
-              alert("Запись удалена");
-          })
-          .catch(error => {
-              console.error('Ошибка:', error);
-          });
+    delOne(idBlock, id)
+      .then(response => {
+        showData(idBlock)
+        alert("Запись удалена");
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
 
-      delOneImg(idBlock, id)
-          .catch(error => {
-              console.error('Ошибка:', error);
-          });
+    delOneImg(idBlock, id)
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
   })
 
   $('.admin_info__item___content').on('click', `.${idBlock}Edit`, function () {
-      let id = $(this).attr("idToEdit");
+    let id = $(this).attr("idToEdit");
 
-      getData(idBlock, id)
-          .then(response => {
-              $(".admin_info__elem").hide();
+    getData(idBlock, id)
+      .then(response => {
+        $(".admin_info__elem").hide();
 
-              $(".admin_info__elem[data_info='edit_element']").show();
+        $(".admin_info__elem[data_info='edit_element']").show();
 
-              $(".admin_info__changeElem___data").empty();
+        $(".admin_info__changeElem___data").empty();
 
-              $(".admin_info__changeElem___data").append(
-                  `<div class="comeBack"><img src="img/icons/left-arrow.png" />Вернуться назад</div>`
-              );
+        $(".admin_info__changeElem___data").append(
+          `<div class="comeBack"><img src="img/icons/left-arrow.png" />Вернуться назад</div>`
+        );
 
-              const data = schema();
+        const data = schema();
 
-              for (const category in data) {
-                  if (category == idBlock) {
-                      for (const subItem in data[category]) {
-                          if (subItem != "menuName") {
-                              if (data[category][subItem].element == "input") {
-                                  if (data[category][subItem].type == "file") {
-                                      $(".admin_info__changeElem___data").append(`
+        for (const category in data) {
+          if (category == idBlock) {
+            for (const subItem in data[category]) {
+              if (subItem != "menuName") {
+                if (data[category][subItem].element == "input") {
+                  if (data[category][subItem].type == "file") {
+                    $(".admin_info__changeElem___data").append(`
                                           <div class="admin_info__changeElem___data____header ">${data[category][subItem].name}</div>
                                               <div class="admin_info__changeElem___data____img">
                                                   <img src="img/${response.img}" alt="" />
                                               </div>
                                           <input type="${data[category][subItem].type}" class="admin_info__changeElem___data____file changeBlock_${subItem}" value="${response[subItem]}" />
                                       `);
-                                  } else {
-                                      $(".admin_info__changeElem___data").append(`
+                  } else {
+                    $(".admin_info__changeElem___data").append(`
                                           <div class="admin_info__changeElem___data____header">${data[category][subItem].name}</div>
                                           <input type="${data[category][subItem].type}" class="admin_info__changeElem___data____title changeBlock_${subItem}" value="${response[subItem]}" />
                                       `);
-                                  }
-                              }
-                              if (data[category][subItem].element == "textarea") {
-                                  $(".admin_info__changeElem___data").append(`
+                  }
+                }
+                if (data[category][subItem].element == "textarea") {
+                  $(".admin_info__changeElem___data").append(`
                                       <div class="admin_info__changeElem___data____header">${data[category][subItem].name}</div>
                                       <textarea class="admin_info__changeElem___data____text" id="${subItem}TextEdit" ></textarea>
                                   `);
 
-                                  getTextEditor(`#${subItem}TextEdit`).then(function () {
-                                      var data = JSON.parse(response.text);
-                                      // console.log(data);
-                                      tinymce.get(`${subItem}TextEdit`).setContent(data.content);
-                                  });
-                              }
-                          }
-                      }
-                  }
+                  getTextEditor(`#${subItem}TextEdit`).then(function () {
+                    var data = JSON.parse(response.text);
+                    // console.log(data);
+                    tinymce.get(`${subItem}TextEdit`).setContent(data.content);
+                  });
+                }
               }
-              $(".admin_info__changeElem___data").append(
-                  `<button class="admin_info__changeElem___data____btn ${idBlock}_change_btn" ${idBlock}_change_id="${id}">Сохранить изменения</button>`
-              );
-          })
+            }
+          }
+        }
+        $(".admin_info__changeElem___data").append(
+          `<button class="admin_info__changeElem___data____btn ${idBlock}_change_btn" ${idBlock}_change_id="${id}">Сохранить изменения</button>`
+        );
+      })
   })
 
   $(".admin_info__elem").on("click", ".comeBack", function () {
-      comeBack();
+    comeBack();
   })
 
   $(".admin_info__elem").on("click", `.${idBlock}_change_btn`, function () {
-      let fileInput = $(`.admin_info__changeElem___data____file`)[0];
+    let fileInput = $(`.admin_info__changeElem___data____file`)[0];
 
-      if (fileInput && fileInput.files && fileInput.files.length > 0) {
-          saveOneImg('.admin_info__changeElem___data____file')
-              .then((response) => {
-                  const data = schema();
-                  let newObject = {};
-
-                  for (const category in data) {
-                      if (category == idBlock) {
-                          for (const subItem in data[category]) {
-                              if (subItem != "menuName") {
-                                  if (data[category][subItem].element == "input") {
-                                      newObject[subItem] = $(`.changeBlock_${subItem}`).val();
-                                  }
-                                  if (data[category][subItem].element == "textarea") {
-                                      let content = tinymce.get(`${subItem}TextEdit`).getContent();
-                                      let data = {
-                                          content: content
-                                      };
-
-                                      let jsonContent = JSON.stringify(data);
-                                      newObject[subItem] = jsonContent;
-                                  }
-                              }
-                          }
-                      }
-                  }
-
-                  newObject.img = response;
-
-                  newObject.id = $(this).attr(`${idBlock}_change_id`);
-
-                  delOneImg(`${idBlock}`, newObject.id)
-                      .catch(error => {
-                          console.error('Ошибка:', error);
-                      });
-
-                  editOne(newObject, `${idBlock}`, schema())
-                      .then(response => {
-                          comeBack();
-                          showData(idBlock);
-                          console.log(response);
-                      })
-                      .catch(error => {
-                          console.error('Ошибка:', error);
-                      });
-              })
-              .catch((error) => {
-                  console.error('Ошибка:', error);
-              });
-      } else {
+    if (fileInput && fileInput.files && fileInput.files.length > 0) {
+      saveOneImg('.admin_info__changeElem___data____file')
+        .then((response) => {
           const data = schema();
           let newObject = {};
 
           for (const category in data) {
-              if (category == idBlock) {
-                  for (const subItem in data[category]) {
-                      if (subItem != "menuName") {
-                          if (data[category][subItem].element == "input") {
-                              newObject[subItem] = $(`.changeBlock_${subItem}`).val();
-                          }
-                          if (data[category][subItem].element == "textarea") {
-                              let content = tinymce.get(`${subItem}TextEdit`).getContent();
-                              let data = {
-                                  content: content
-                              };
-
-                              let jsonContent = JSON.stringify(data);
-                              newObject[subItem] = jsonContent;
-                          }
-                      }
+            if (category == idBlock) {
+              for (const subItem in data[category]) {
+                if (subItem != "menuName") {
+                  if (data[category][subItem].element == "input") {
+                    newObject[subItem] = $(`.changeBlock_${subItem}`).val();
                   }
+                  if (data[category][subItem].element == "textarea") {
+                    let content = tinymce.get(`${subItem}TextEdit`).getContent();
+                    let data = {
+                      content: content
+                    };
+
+                    let jsonContent = JSON.stringify(data);
+                    newObject[subItem] = jsonContent;
+                  }
+                }
               }
+            }
           }
+
+          newObject.img = response;
 
           newObject.id = $(this).attr(`${idBlock}_change_id`);
 
+          delOneImg(`${idBlock}`, newObject.id)
+            .catch(error => {
+              console.error('Ошибка:', error);
+            });
+
           editOne(newObject, `${idBlock}`, schema())
-              .then(response => {
-                  comeBack();
-                  showData(idBlock);
-                  console.log(response);
-              })
-              .catch(error => {
-                  console.error('Ошибка:', error);
-              });
+            .then(response => {
+              comeBack();
+              showData(idBlock);
+              console.log(response);
+            })
+            .catch(error => {
+              console.error('Ошибка:', error);
+            });
+        })
+        .catch((error) => {
+          console.error('Ошибка:', error);
+        });
+    } else {
+      const data = schema();
+      let newObject = {};
+
+      for (const category in data) {
+        if (category == idBlock) {
+          for (const subItem in data[category]) {
+            if (subItem != "menuName") {
+              if (data[category][subItem].element == "input") {
+                newObject[subItem] = $(`.changeBlock_${subItem}`).val();
+              }
+              if (data[category][subItem].element == "textarea") {
+                let content = tinymce.get(`${subItem}TextEdit`).getContent();
+                let data = {
+                  content: content
+                };
+
+                let jsonContent = JSON.stringify(data);
+                newObject[subItem] = jsonContent;
+              }
+            }
+          }
+        }
       }
+
+      newObject.id = $(this).attr(`${idBlock}_change_id`);
+
+      editOne(newObject, `${idBlock}`, schema())
+        .then(response => {
+          comeBack();
+          showData(idBlock);
+          console.log(response);
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+        });
+    }
   })
 }
 
@@ -446,34 +446,34 @@ export function menu_tabs() {
   let tabData = localStorage.getItem('tab_name');
 
   blocks.each(function () {
-      if ($(this).attr("data_info") == tabData) {
-          $(this).show();
-      } else {
-          $(this).hide();
-      }
+    if ($(this).attr("data_info") == tabData) {
+      $(this).show();
+    } else {
+      $(this).hide();
+    }
   })
 
   menu.each(function () {
-      if ($(this).attr("data_info") == tabData) {
-          $(".admin_menu__items li").removeClass("activeItem");
-          $(this).addClass("activeItem");
-      }
+    if ($(this).attr("data_info") == tabData) {
+      $(".admin_menu__items li").removeClass("activeItem");
+      $(this).addClass("activeItem");
+    }
   })
 
   $(".admin_menu__items li").click(function () {
-      $(".admin_menu__items li").removeClass("activeItem");
-      $(this).addClass("activeItem");
-      let tabName = $(this).attr("data_info");
-      localStorage.setItem('tab_name', tabName);
+    $(".admin_menu__items li").removeClass("activeItem");
+    $(this).addClass("activeItem");
+    let tabName = $(this).attr("data_info");
+    localStorage.setItem('tab_name', tabName);
 
-      let blocks = $(".admin_info__elem");
-      blocks.each(function () {
-          if ($(this).attr("data_info") == tabName) {
-              $(this).show();
-          } else {
-              $(this).hide();
-          }
-      })
+    let blocks = $(".admin_info__elem");
+    blocks.each(function () {
+      if ($(this).attr("data_info") == tabName) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    })
   })
 }
 
@@ -482,11 +482,11 @@ export function comeBack() {
 
   let blocks = $(".admin_info__elem");
   blocks.each(function () {
-      if ($(this).attr("data_info") == tabData) {
-          $(this).show();
-      } else {
-          $(this).hide();
-      }
+    if ($(this).attr("data_info") == tabData) {
+      $(this).show();
+    } else {
+      $(this).hide();
+    }
   })
 }
 
@@ -496,7 +496,7 @@ export function createMenuNames(schema) {
   const menuList = $(".admin_menu__items ul:first-child");
 
   for (const category in data) {
-      menuList.append(`
+    menuList.append(`
           <li data_info="${category}">${data[category].menuName}<div class="triangle"></div></li>
       `);
   }
@@ -508,46 +508,71 @@ export function createMenuTabs(schema) {
   const menuList = $(".admin_info");
 
   for (const category in data) {
-      menuList.append(`
+    menuList.append(`
           <div class="admin_info__elem" data_info="${category}">
               <div class="admin_info__item">
-                  <div class="admin_info__item___title">${data[category].menuName}</div>
-                  <div class="admin_info__item___form">
-
+                  <div class="admin_info__item___tabNames">
+                    <div class="admin_info__item___tabNames____name ${category}_click_name activeTabName" dataTab="${category}_open_first">
+                      Все ${data[category].menuName}
+                    </div>
+                    <div class="admin_info__item___tabNames____name ${category}_click_name" dataTab="${category}_open_second">
+                      Добавить ${data[category].menuName}
+                    </div>
                   </div>
-                  <div class="admin_info__item___title">Существующие ${data[category].menuName}</div>
 
-                  <div class="admin_info__item___content">
-
+                  <div class="admin_info__item___tabBlocks">
+                    <div class="admin_info__item___tabBlocks____block ${category}_show_block " dataTab="${category}_open_second">
+                        <div class="admin_info__item___form"></div>
+                    </div>
+                    <div class="admin_info__item___tabBlocks____block ${category}_show_block activeBlockShow" dataTab="${category}_open_first">
+                      <div class="admin_info__item___content"></div>
+                    </div>
                   </div>
               </div>
           </div>
       `);
-      for (const subItem in data[category]) {
-          if (subItem != "menuName") {
-              $(`.admin_info__elem[data_info="${category}"] .admin_info__item___form`).append(`
+
+    $(".admin_info__elem").on("click", `.${category}_click_name`, function () {
+      $(`.${category}_click_name`).removeClass("activeTabName");
+      let tabName = $(this).attr("dataTab");
+      $(this).addClass("activeTabName");
+      
+      let blocks = $(`.${category}_show_block`);
+
+      blocks.each(function () {
+        if ($(this).attr("dataTab") == tabName) {
+          $(this).show();
+        } else {
+          $(this).hide();
+        }
+      })
+    })
+
+    for (const subItem in data[category]) {
+      if (subItem != "menuName") {
+        $(`.admin_info__elem[data_info="${category}"] .admin_info__item___form`).append(`
                   <label>${data[category][subItem].name}</label>
                   <${data[category][subItem].element} type="${data[category][subItem].type}"  id="${category}_${subItem}" />
               `)
-          }
       }
+    }
 
-      $(`.admin_info__elem[data_info="${category}"] .admin_info__item___form`).append(`
+    $(`.admin_info__elem[data_info="${category}"] .admin_info__item___form`).append(`
           <button id="save${category}">Добавить ${data[category].menuName}</button>
       `)
 
-      tinymce.init({
-          selector: `#${category}_text`,
-          plugins: [
-              'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-              'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-              'table', 'emoticons', 'template', 'help'
-          ],
-          toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
-              'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-              'forecolor backcolor emoticons | help',
-          menubar: 'favs file edit view insert format tools table help',
-      })
+    tinymce.init({
+      selector: `#${category}_text`,
+      plugins: [
+        'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+        'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
+        'table', 'emoticons', 'template', 'help'
+      ],
+      toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
+        'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+        'forecolor backcolor emoticons | help',
+      menubar: 'favs file edit view insert format tools table help',
+    })
   }
 
   let tabData = localStorage.getItem('tab_name');
@@ -555,10 +580,10 @@ export function createMenuTabs(schema) {
   let blocks = $(".admin_info__elem");
 
   blocks.each(function () {
-      if ($(this).attr("data_info") == tabData) {
-          $(this).show();
-      } else {
-          $(this).hide();
-      }
+    if ($(this).attr("data_info") == tabData) {
+      $(this).show();
+    } else {
+      $(this).hide();
+    }
   })
 }
