@@ -33,18 +33,6 @@ if (isset($_POST['json'])) {
             }
         }
 
-
-        // print_r("DB");
-        // print_r($totalMass[0]->img);
-        // print_r("del");
-        // print_r($delMass);
-        // print_r("object");
-        // print_r($object->img);
-        // print_r("all data");
-        // print_r($resultAll);
-
-
-        
         $jsonResult = json_encode($totalMass, JSON_PRETTY_PRINT);
         file_put_contents($filePath, $jsonResult);
         echo "Данные успешно изменены на сервере.";
