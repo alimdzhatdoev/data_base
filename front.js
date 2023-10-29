@@ -33,7 +33,3 @@ for (const category in data) {
 }
 
 createFilesFromConfig(schema)
-    .then((response) => {
-        console.log(response);
-    })
-    .catch((error) => {});
