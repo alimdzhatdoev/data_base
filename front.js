@@ -3,7 +3,7 @@ import {
     getData,
     delOne,
     editOne,
-    saveOneImg,
+    saveImg,
     generateId,
     delOneImg,
     getTextEditor,

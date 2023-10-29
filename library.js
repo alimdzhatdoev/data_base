@@ -103,7 +103,7 @@ export async function delOne(fileName, id) {
 
 // img
 
-export async function saveOneImg(imgID) {
+export async function saveImg(imgID) {
   return new Promise((resolve, reject) => {
     var fileInput = $(`${imgID}`)[0];
     var file = fileInput.files[0];
@@ -113,7 +113,7 @@ export async function saveOneImg(imgID) {
       formData.append('file', file);
 
       $.ajax({
-        url: "./dataBase/server/save-one-img.php",
+        url: "./dataBase/server/save-img.php",
         type: 'POST',
         data: formData,
         processData: false,
@@ -228,7 +228,7 @@ export function makeData(idBlock) {
       }
     }
 
-    saveOneImg(`#${idBlock}_img`)
+    saveImg(`#${idBlock}_img`)
       .then(
         (response) => {
           newObject["img"] = response;
@@ -351,7 +351,7 @@ export function makeData(idBlock) {
     let fileInput = $(`.admin_info__changeElem___data____file`)[0];
 
     if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      saveOneImg('.admin_info__changeElem___data____file')
+      saveImg('.admin_info__changeElem___data____file')
         .then((response) => {
           const data = schema();
           let newObject = {};
