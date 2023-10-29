@@ -5,7 +5,7 @@ import {
     editOne,
     saveImg,
     generateId,
-    delOneImg,
+    delImg,
     getTextEditor,
     showData,
     makeData,

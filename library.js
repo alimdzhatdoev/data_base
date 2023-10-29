@@ -106,11 +106,40 @@ export async function delOne(fileName, id) {
 export async function saveImg(imgID) {
   return new Promise((resolve, reject) => {
     var fileInput = $(`${imgID}`)[0];
-    var file = fileInput.files[0];
+    var files = fileInput.files;
 
-    if (file) {
+    if (files.length > 0) {
       var formData = new FormData();
-      formData.append('file', file);
+      for (let i = 0; i < files.length; i++) {
+        formData.append('file[]', files[i]);
+      }
+
+      $.ajax({
+        url: "./dataBase/server/save-img.php",
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+          resolve(JSON.parse(response));
+        },
+        error: function (error) {
+          reject(error);
+        }
+      });
+    } else {
+      reject('Файл не выбран.');
+    }
+  });
+}
+
+export async function changeImg(filesToSave) {
+  return new Promise((resolve, reject) => {
+    if (filesToSave) {
+      var formData = new FormData();
+      for (let i = 0; i < filesToSave.length; i++) {
+        formData.append('file[]', filesToSave[i]);
+      }
 
       $.ajax({
         url: "./dataBase/server/save-img.php",
@@ -131,13 +160,33 @@ export async function saveImg(imgID) {
   });
 }
 
-export async function delOneImg(fileName, id) {
+export async function delImg(fileName, id) {
   return new Promise((resolve, reject) => {
     $.ajax({
       type: "POST",
       url: "./dataBase/server/del-img.php",
       data: {
         id: id,
+        fileName: fileName
+      },
+      success: function (response) {
+        resolve(response); // Разрешение обещания с ответом
+      },
+      error: function (err) {
+        reject(err); // Отклонение обещания с ошибкой
+        console.error(err);
+      }
+    });
+  });
+}
+
+export async function delOneImg(fileName, imgName) {
+  return new Promise((resolve, reject) => {
+    $.ajax({
+      type: "POST",
+      url: "./dataBase/server/del-one-img.php",
+      data: {
+        imgName: imgName,
         fileName: fileName
       },
       success: function (response) {
@@ -182,7 +231,7 @@ export function showData(fileName) {
         $(`.admin_info__elem[data_info = ${fileName}] .admin_info__item___content`).append(`
               <div class="admin_info__item___content____element">
                   <div class="admin_info__item___content____element_____title">
-                      <img src="img/${response[i].img}" alt="" />
+                      <img src="img/${response[i].img[0]}" alt="" />
                       ${response[i].title}
                   </div>
                   <div class="admin_info__item___content____element_____btnHover">
@@ -278,7 +327,7 @@ export function makeData(idBlock) {
         console.error('Ошибка:', error);
       });
 
-    delOneImg(idBlock, id)
+    delImg(idBlock, id)
       .catch(error => {
         console.error('Ошибка:', error);
       });
@@ -301,6 +350,19 @@ export function makeData(idBlock) {
 
         const data = schema();
 
+        function showImgChange(response, type, name) {
+          let str = "";
+          for (let i = 0; i < response.img.length; i++) {
+            str += `
+              <div class="admin_info__changeElem___data____img">
+                <img src="img/${response.img[i]}" data_change="${response.img[i]}" alt="" />
+              </div>
+              <input type="${type}" class="admin_info__changeElem___data____file changeBlock_${name}__${i}" oldName=${response.img[i]} />
+            `;
+          }
+          return str;
+        }
+
         for (const category in data) {
           if (category == idBlock) {
             for (const subItem in data[category]) {
@@ -308,24 +370,24 @@ export function makeData(idBlock) {
                 if (data[category][subItem].element == "input") {
                   if (data[category][subItem].type == "file") {
                     $(".admin_info__changeElem___data").append(`
-                                          <div class="admin_info__changeElem___data____header ">${data[category][subItem].name}</div>
-                                              <div class="admin_info__changeElem___data____img">
-                                                  <img src="img/${response.img}" alt="" />
-                                              </div>
-                                          <input type="${data[category][subItem].type}" class="admin_info__changeElem___data____file changeBlock_${subItem}" value="${response[subItem]}" />
-                                      `);
+                        <div class="admin_info__changeElem___data____header ">${data[category][subItem].name}</div>
+                        ${showImgChange(response, data[category][subItem].type, subItem)}   
+                        
+                        <label>Добавить еще картинки</label>
+                        <input type="file" multiple class="admin_info__changeElem___data____file changeBlock__${subItem}___addMore" />
+                    `);
                   } else {
                     $(".admin_info__changeElem___data").append(`
-                                          <div class="admin_info__changeElem___data____header">${data[category][subItem].name}</div>
-                                          <input type="${data[category][subItem].type}" class="admin_info__changeElem___data____title changeBlock_${subItem}" value="${response[subItem]}" />
-                                      `);
+                        <div class="admin_info__changeElem___data____header">${data[category][subItem].name}</div>
+                        <input type="${data[category][subItem].type}" class="admin_info__changeElem___data____title changeBlock_${subItem}" value="${response[subItem]}" />
+                    `);
                   }
                 }
                 if (data[category][subItem].element == "textarea") {
                   $(".admin_info__changeElem___data").append(`
-                                      <div class="admin_info__changeElem___data____header">${data[category][subItem].name}</div>
-                                      <textarea class="admin_info__changeElem___data____text" id="${subItem}TextEdit" ></textarea>
-                                  `);
+                      <div class="admin_info__changeElem___data____header">${data[category][subItem].name}</div>
+                      <textarea class="admin_info__changeElem___data____text" id="${subItem}TextEdit" ></textarea>
+                  `);
 
                   getTextEditor(`#${subItem}TextEdit`).then(function () {
                     var data = JSON.parse(response.text);
@@ -348,11 +410,52 @@ export function makeData(idBlock) {
   })
 
   $(".admin_info__elem").on("click", `.${idBlock}_change_btn`, function () {
-    let fileInput = $(`.admin_info__changeElem___data____file`)[0];
+    
+    let filesToSave = [];
+    let filesToDel = [];
 
-    if (fileInput && fileInput.files && fileInput.files.length > 0) {
-      saveImg('.admin_info__changeElem___data____file')
+    let inputs = $(".admin_info__changeElem___data____file");
+
+
+    for (let i = 0; i < inputs.length - 1; i++) {
+      if (inputs[i].files && inputs[i].files.length > 0) {
+        filesToSave.push(inputs[i].files[0]);
+        filesToDel.push(inputs[i].attributes["oldName"].nodeValue);
+      }
+    }
+
+    // console.log(filesToDel);
+
+    let addInputs = $(".changeBlock__img___addMore");
+
+    for (let i = 0; i < addInputs[0].files.length; i++) {
+      if (addInputs[0].files[i]) {
+        filesToSave.push(addInputs[0].files[i]);
+      }
+    }
+
+    function removeDuplicateFiles(files) {
+      const uniqueFiles = [];
+      const seenFileNames = new Set();
+    
+      for (const file of files) {
+        if (!seenFileNames.has(file.name)) {
+          uniqueFiles.push(file);
+          seenFileNames.add(file.name);
+        }
+      }
+    
+      return uniqueFiles;
+    }
+
+    filesToSave = removeDuplicateFiles(filesToSave);
+
+    if (filesToSave.length > 0) {
+      changeImg(filesToSave)
         .then((response) => {
+          //response - массив с новыми названиями картинок
+          //filesToDel - массив с названиями картинок которые надо удалить
+          
           const data = schema();
           let newObject = {};
 
@@ -377,14 +480,18 @@ export function makeData(idBlock) {
             }
           }
 
-          newObject.img = response;
+          newObject.img = JSON.parse(response);
+          newObject.filesToDel = filesToDel;
 
           newObject.id = $(this).attr(`${idBlock}_change_id`);
+          // console.log(newObject);
 
-          delOneImg(`${idBlock}`, newObject.id)
-            .catch(error => {
-              console.error('Ошибка:', error);
-            });
+          for(let i = 0; i < filesToDel.length; i++) {
+            delOneImg(`${idBlock}`, filesToDel[i])
+              .catch(error => {
+                console.error('Ошибка:', error);
+              });
+          }
 
           editOne(newObject, `${idBlock}`, schema())
             .then(response => {
@@ -536,7 +643,7 @@ export function createMenuTabs(schema) {
       $(`.${category}_click_name`).removeClass("activeTabName");
       let tabName = $(this).attr("dataTab");
       $(this).addClass("activeTabName");
-      
+
       let blocks = $(`.${category}_show_block`);
 
       blocks.each(function () {
@@ -552,7 +659,7 @@ export function createMenuTabs(schema) {
       if (subItem != "menuName") {
         $(`.admin_info__elem[data_info="${category}"] .admin_info__item___form`).append(`
                   <label>${data[category][subItem].name}</label>
-                  <${data[category][subItem].element} type="${data[category][subItem].type}"  id="${category}_${subItem}" />
+                  <${data[category][subItem].element} type="${data[category][subItem].type}" multiple id="${category}_${subItem}"  />
               `)
       }
     }

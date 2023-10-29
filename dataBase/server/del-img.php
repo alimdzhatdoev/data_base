@@ -13,16 +13,13 @@ if ($currentData != "") {
 
     for ($i = 0; $i < count($totalMass); $i++) {
         if ($totalMass[$i]->id == $id) {
-            $imgName = "../../img/" . $totalMass[$i]->img;
-
-            if (file_exists($imgName)) {
-                if (unlink($imgName)) {
-                    echo 'Картинка успешно удалена.';
+            for ($j = 0; $j < count($totalMass[$i]->img); $j++) {
+                $imgName = "../../img/" . $totalMass[$i]->img[$j];
+                if (file_exists($imgName)) {
+                    unlink($imgName);
                 } else {
-                    echo 'Не удалось удалить картинку.';
+                    echo 'Картинка не существует.';
                 }
-            } else {
-                echo 'Картинка не существует.';
             }
         }
     }

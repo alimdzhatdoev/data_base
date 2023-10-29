@@ -15,7 +15,7 @@ export function schema() {
                 "required": true
             },
             "img": {
-                "name": "Картинка новости",
+                "name": "Картинки новости",
                 "element": "input",
                 "type": "file",
                 "required": true
@@ -42,7 +42,7 @@ export function schema() {
                 "required": true
             },
             "img": {
-                "name": "Картинка мероприятия",
+                "name": "Картинки мероприятия",
                 "element": "input",
                 "type": "file",
                 "required": true
