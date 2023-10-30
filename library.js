@@ -685,7 +685,6 @@ export function menu_tabs() {
       if ($(this).attr("data_info") == tabName) {
         $(this).show();
         location.reload();
-        // addTextEdit($(this).attr("data_info"));
       } else {
         $(this).hide();
       }
@@ -816,7 +815,5 @@ export async function createFilesFromConfig(schema) {
 }
 
 export function addTextEdit(data) {
-
-
   initTextEditor(`${data}_text`);
 }
