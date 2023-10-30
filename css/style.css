@@ -210,6 +210,16 @@ input[type="file"] {
     display: flex;
     gap: 30px;
     align-items: flex-start;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    -ms-line-clamp: 1;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    word-wrap: break-word;
+    -webkit-box-orient: vertical;
+    box-orient: vertical;
 }
 
 .admin_info__item___content____element_____title img {
