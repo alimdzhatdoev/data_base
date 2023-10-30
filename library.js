@@ -329,6 +329,7 @@ export function makeData(idBlock) {
           addData(newObject, `${idBlock}`)
             .then(response => {
               showData(idBlock);
+              // alert("Запись сохранена");
               $(".downloadBlock").css("display", "none");
             })
             .catch(error => {
@@ -358,7 +359,7 @@ export function makeData(idBlock) {
               }
             }
           }
-          // alert("Запись сохранена");
+
         },
       )
       .catch((error) => {
@@ -368,17 +369,21 @@ export function makeData(idBlock) {
 
   $('.admin_info__item___content').on('click', `.${idBlock}Delete`, function () {
     let id = $(this).attr("idTodel");
+    $(".downloadBlock").css("display", "flex");
 
     delOne(idBlock, id)
       .then(response => {
-        showData(idBlock)
-        alert("Запись удалена");
+        showData(idBlock);
       })
       .catch(error => {
         console.error('Ошибка:', error);
       });
 
     delImg(idBlock, id)
+      .then(response => {
+        // alert("Запись удалена");
+        $(".downloadBlock").css("display", "none");
+      })
       .catch(error => {
         console.error('Ошибка:', error);
       });
@@ -501,7 +506,7 @@ export function makeData(idBlock) {
   })
 
   $(".admin_info__elem").on("click", `.${idBlock}_change_btn`, async function () {
-
+    $(".downloadBlock").css("display", "flex");
     let filesToSave = [];
     let filesToDel = [];
 
@@ -596,7 +601,8 @@ export function makeData(idBlock) {
             .then(response => {
               comeBack();
               showData(idBlock);
-              console.log(response);
+              // alert(response);
+              $(".downloadBlock").css("display", "none");
             })
             .catch(error => {
               console.error('Ошибка:', error);
@@ -642,8 +648,9 @@ export function makeData(idBlock) {
       editOne(newObject, `${idBlock}`, schema())
         .then(response => {
           comeBack();
+          // alert(response);
           showData(idBlock);
-          console.log(response);
+          $(".downloadBlock").css("display", "none");
         })
         .catch(error => {
           console.error('Ошибка:', error);
