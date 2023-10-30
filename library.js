@@ -685,7 +685,6 @@ export function menu_tabs() {
       if ($(this).attr("data_info") == tabName) {
         $(this).show();
         location.reload();
-        
       } else {
         $(this).hide();
       }
