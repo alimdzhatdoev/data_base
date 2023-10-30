@@ -320,6 +320,7 @@ export function makeData(idBlock) {
       }
     }
 
+    $(".downloadBlock").css("display", "flex");
     saveImg(`#${idBlock}_img`)
       .then(
         (response) => {
@@ -327,7 +328,8 @@ export function makeData(idBlock) {
 
           addData(newObject, `${idBlock}`)
             .then(response => {
-              showData(idBlock)
+              showData(idBlock);
+              $(".downloadBlock").css("display", "none");
             })
             .catch(error => {
               console.error('Ошибка:', error);
@@ -356,8 +358,7 @@ export function makeData(idBlock) {
               }
             }
           }
-
-          alert("Запись сохранена");
+          // alert("Запись сохранена");
         },
       )
       .catch((error) => {
