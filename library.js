@@ -230,21 +230,32 @@ export function generateId() {
   return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 }
 
-export function getTextEditor(fileName) {
-  return (
-    tinymce.init({
-      selector: fileName,
-      plugins: [
-        'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-        'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-        'table', 'emoticons', 'template', 'help'
-      ],
-      toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
-        'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-        'forecolor backcolor emoticons | help',
-      menubar: 'favs file edit view insert format tools table help',
-    })
-  )
+let editorPromise = null;
+
+export function initTextEditor(fileName) {
+  if (!editorPromise) {
+    editorPromise = new Promise((resolve, reject) => {
+      const editor = ClassicEditor
+        .create(document.querySelector(`#${fileName}`))
+        .then(createdEditor => {
+          resolve(createdEditor);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
+  }
+
+  return editorPromise;
+}
+
+export function getTextEditor() {
+  if (editorPromise) {
+    return editorPromise;
+  } else {
+    console.error("Редактор не инициализирован. Вызовите initTextEditor сначала.");
+    return null;
+  }
 }
 
 export function showData(fileName) {
@@ -288,13 +299,21 @@ export function makeData(idBlock) {
               newObject[subItem] = $(`#${category}_${subItem}`).val();
             }
             if (data[category][subItem].element == "textarea") {
-              let content = tinymce.get(`${category}_${subItem}`).getContent();
-              let data = {
-                content: content
-              };
+              //сбор информации из редактора для сохранения
 
-              let jsonContent = JSON.stringify(data);
-              newObject[subItem] = jsonContent;
+              initTextEditor(`${category}_${subItem}`);
+
+              const editorPromise = getTextEditor();
+              editorPromise.then(editor => {
+                let editorData = editor.getData();
+
+                let data = {
+                  content: editorData
+                };
+
+                let jsonContent = JSON.stringify(data);
+                newObject[subItem] = jsonContent;
+              });
             }
           }
         }
@@ -324,7 +343,14 @@ export function makeData(idBlock) {
                     $(`#${category}_${subItem}`).val("");
                   }
                   if (data[category][subItem].element == "textarea") {
-                    tinymce.get(`${category}_${subItem}`).setContent("");
+                    //очистка редактора
+
+                    initTextEditor(`${category}_${subItem}`);
+
+                    const editorPromise = getTextEditor();
+                    editorPromise.then(editor => {
+                      editor.setData("");
+                    });
                   }
                 }
               }
@@ -447,11 +473,17 @@ export function makeData(idBlock) {
                       <textarea class="admin_info__changeElem___data____text" id="${subItem}TextEdit" ></textarea>
                   `);
 
-                  getTextEditor(`#${subItem}TextEdit`).then(function () {
-                    var data = JSON.parse(response.text);
-                    // console.log(data);
-                    tinymce.get(`${subItem}TextEdit`).setContent(data.content);
+                  // запись в редактор информации из бд
+
+                  editorPromise = null;
+
+                  initTextEditor(`${subItem}TextEdit`);
+
+                  const newEditorPromise = getTextEditor();
+                  newEditorPromise.then(newEditor => {
+                    newEditor.setData(`${JSON.parse(response[subItem]).content}`);
                   });
+
                 }
               }
             }
@@ -467,7 +499,7 @@ export function makeData(idBlock) {
     comeBack();
   })
 
-  $(".admin_info__elem").on("click", `.${idBlock}_change_btn`, function () {
+  $(".admin_info__elem").on("click", `.${idBlock}_change_btn`, async function () {
 
     let filesToSave = [];
     let filesToDel = [];
@@ -510,7 +542,7 @@ export function makeData(idBlock) {
 
     if (filesToSave.length > 0) {
       changeImg(filesToSave)
-        .then((response) => {
+        .then(async (response) => {
           //response - массив с новыми названиями картинок
           //filesToDel - массив с названиями картинок которые надо удалить
 
@@ -525,13 +557,22 @@ export function makeData(idBlock) {
                     newObject[subItem] = $(`.changeBlock_${subItem}`).val();
                   }
                   if (data[category][subItem].element == "textarea") {
-                    let content = tinymce.get(`${subItem}TextEdit`).getContent();
-                    let data = {
-                      content: content
-                    };
+                    // Отправка измененной информации на запись в бд
+                    initTextEditor(`${subItem}_TextEdit`);
 
-                    let jsonContent = JSON.stringify(data);
-                    newObject[subItem] = jsonContent;
+                    const editorPromise1 = getTextEditor();
+
+                    await editorPromise1.then(async (editor) => {
+                      let editorData = await editor.getData();
+                      let data = {
+                        content: editorData,
+                      };
+
+                      let jsonContent = JSON.stringify(data);
+
+                      newObject[subItem] = jsonContent;
+                    });
+
                   }
                 }
               }
@@ -542,7 +583,6 @@ export function makeData(idBlock) {
           newObject.filesToDel = filesToDel;
 
           newObject.id = $(this).attr(`${idBlock}_change_id`);
-          // console.log(newObject);
 
           for (let i = 0; i < filesToDel.length; i++) {
             delOneImg(`${idBlock}`, filesToDel[i])
@@ -576,18 +616,25 @@ export function makeData(idBlock) {
                 newObject[subItem] = $(`.changeBlock_${subItem}`).val();
               }
               if (data[category][subItem].element == "textarea") {
-                let content = tinymce.get(`${subItem}TextEdit`).getContent();
-                let data = {
-                  content: content
-                };
 
-                let jsonContent = JSON.stringify(data);
-                newObject[subItem] = jsonContent;
+                const editorPromise1 = getTextEditor();
+
+                await editorPromise1.then(async (editor) => {
+                  let editorData = await editor.getData();
+                  let data = {
+                    content: editorData,
+                  };
+
+                  let jsonContent = JSON.stringify(data);
+
+                  newObject[subItem] = jsonContent;
+                });
               }
             }
           }
         }
       }
+
 
       newObject.id = $(this).attr(`${idBlock}_change_id`);
 
@@ -613,6 +660,8 @@ export function menu_tabs() {
   blocks.each(function () {
     if ($(this).attr("data_info") == tabData) {
       $(this).show();
+
+      addTextEdit($(this).attr("data_info"));
     } else {
       $(this).hide();
     }
@@ -635,6 +684,8 @@ export function menu_tabs() {
     blocks.each(function () {
       if ($(this).attr("data_info") == tabName) {
         $(this).show();
+        location.reload();
+        // addTextEdit($(this).attr("data_info"));
       } else {
         $(this).hide();
       }
@@ -724,20 +775,10 @@ export function createMenuTabs(schema) {
 
     $(`.admin_info__elem[data_info="${category}"] .admin_info__item___form`).append(`
           <button id="save${category}">Добавить ${data[category].menuName}</button>
-      `)
+    `)
 
-    tinymce.init({
-      selector: `#${category}_text`,
-      plugins: [
-        'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-        'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-        'table', 'emoticons', 'template', 'help'
-      ],
-      toolbar: 'undo redo | styles | bold italic | alignleft aligncenter alignright alignjustify | ' +
-        'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-        'forecolor backcolor emoticons | help',
-      menubar: 'favs file edit view insert format tools table help',
-    })
+    //добавляется при создании редактора
+
   }
 
   let tabData = localStorage.getItem('tab_name');
@@ -772,4 +813,10 @@ export async function createFilesFromConfig(schema) {
       }
     });
   });
+}
+
+export function addTextEdit(data) {
+
+
+  initTextEditor(`${data}_text`);
 }

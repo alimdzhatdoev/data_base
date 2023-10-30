@@ -6,25 +6,26 @@ import {
     saveImg,
     generateId,
     delImg,
-    getTextEditor,
     showData,
     makeData,
     menu_tabs,
     comeBack,
     createMenuNames,
     createMenuTabs,
-    createFilesFromConfig
+    createFilesFromConfig,
+    addTextEdit
 } from './library.js';
 
 import {
     schema
 } from './config_db.js';
 
+
 createFilesFromConfig(schema)
 
 createMenuTabs(schema());
 
-createMenuNames(schema(), getTextEditor());
+createMenuNames(schema());
 
 menu_tabs();
 
